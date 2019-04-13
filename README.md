@@ -8,7 +8,7 @@ A Python Package for Email Automation.
 
 Installation
 ------------
-To install Walrus run this command:
+To install PyWalrus run this command:
 ```
 $ pip3 install pywalrus
 ```
