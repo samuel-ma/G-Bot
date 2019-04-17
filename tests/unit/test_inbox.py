@@ -3,7 +3,7 @@ import unittest
 from pywalrus import Inbox
 
 
-class TestContact(unittest.TestCase):
+class TestInbox(unittest.TestCase):
 
     def test_class(self):
         self.assertTrue(isinstance(Inbox(), Inbox))
