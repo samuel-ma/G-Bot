@@ -1,0 +1,7 @@
+"""
+Contact
+"""
+
+
+class Contact():
+    pass

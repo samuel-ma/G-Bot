@@ -1,0 +1,7 @@
+"""
+Inbox
+"""
+
+
+class Inbox():
+    pass
