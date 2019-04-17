@@ -1,0 +1,7 @@
+"""
+Message
+"""
+
+
+class Message():
+    pass
