@@ -14,6 +14,8 @@ setuptools.setup(
     url="https://github.com/silverbackhq/pywalrus",
     packages=setuptools.find_packages(exclude=['tests', 'tests.*']),
     install_requires=["pytz"],
+    license="MIT",
+    platforms=['any'],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
