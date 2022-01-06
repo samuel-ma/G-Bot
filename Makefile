@@ -1,66 +1,60 @@
-PYTHON ?= python3
+PYTHON ?= python
 PIP ?= $(PYTHON) -m pip
-COVERAGE ?= coverage
+TOX ?= tox
 
 
+help: Makefile
+	@echo
+	@echo " Choose a command run in Github Bot:"
+	@echo
+	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
+	@echo
+
+
+## config: Install needed dependencies.
+.PHONY: config
 config:
-	$(PIP) install pycodestyle
-	$(PIP) install coverage
-	$(PIP) install flake8
 	$(PIP) install twine
+	$(PIP) install wheel
+	$(PIP) install tox
+	$(PIP) install setuptools-scm
 
 
-lint-pycodestyle:
-	@echo "\n==> Pycodestyle Linting:"
-	@find pywalrus -type f -name \*.py | while read file; do echo "$$file" && pycodestyle --config=./pycodestyle --first "$$file" || exit 1; done
-
-
-lint-flake8:
-	@echo "\n==> Flake8 Linting:"
-	@find pywalrus -type f -name \*.py | while read file; do echo "$$file" && flake8 --config=flake8.ini "$$file" || exit 1; done
-
-
-lint: lint-pycodestyle lint-flake8
-	@echo "\n==> All linting cases passed!"
-
-
+## test: Run test case.
+.PHONY: test
 test:
 	@echo "\n==> Run Test Cases:"
-	$(PYTHON) setup.py test
+	$(TOX)
 
 
-coverage:
-	$(COVERAGE) run --source='.' setup.py test
-	$(COVERAGE) report -m
-
-
-ci: test coverage lint
+## ci: Run all CI checks.
+.PHONY: ci
+ci: test
 	@echo "\n==> All quality checks passed"
 
 
+## build: Build the package.
+.PHONY: build
 build:
-	rm -rf build dist
-	$(PYTHON) setup.py sdist bdist_wheel
+	$(TOX) -e clean
+	$(TOX) -e build
 
 
-upload:
-	$(PYTHON) -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+## version: Get latest version
+.PHONY: version
+version:
+	$(PYTHON) setup.py --version
 
 
+## release: Release to PyPi
 release:
 	$(PYTHON) -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
 
 
-test_install:
-	$(PYTHON) -m pip install --index-url https://test.pypi.org/simple/ pywalrus
-
-
+## install: Install the package locally
+.PHONY: install
 install:
-	$(PYTHON) -m pip install pywalrus
-
-
-develop:
-	$(PYTHON) setup.py develop
+	$(PYTHON) setup.py install
 
 
 .PHONY: ci

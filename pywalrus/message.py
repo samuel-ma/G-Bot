@@ -1,7 +1,0 @@
-"""
-Message
-"""
-
-
-class Message():
-    pass

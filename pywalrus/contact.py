@@ -1,7 +1,0 @@
-"""
-Contact
-"""
-
-
-class Contact():
-    pass

@@ -21,16 +21,19 @@
 # SOFTWARE.
 
 
-from setuptools import setup
+import sys
 
-if __name__ == "__main__":
-    try:
-        setup(use_scm_version={"version_scheme": "no-guess-dev"})
-    except:  # noqa
-        print(
-            "\n\nAn error occurred while building the project, "
-            "please ensure you have the most updated version of setuptools, "
-            "setuptools_scm and wheel with:\n"
-            "   pip install -U setuptools setuptools_scm wheel\n\n"
-        )
-        raise
+if sys.version_info[:2] >= (3, 8):
+    # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`
+    from importlib.metadata import PackageNotFoundError, version  # pragma: no cover
+else:
+    from importlib_metadata import PackageNotFoundError, version  # pragma: no cover
+
+try:
+    # Change here if project is renamed and does not equal the package name
+    dist_name = __name__
+    __version__ = version(dist_name)
+except PackageNotFoundError:  # pragma: no cover
+    __version__ = "unknown"
+finally:
+    del version, PackageNotFoundError

@@ -1,7 +1,0 @@
-"""
-Inbox
-"""
-
-
-class Inbox():
-    pass
