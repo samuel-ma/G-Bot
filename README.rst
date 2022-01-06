@@ -31,12 +31,15 @@ To Use the bot, follow the following steps
 
     $ pip install ghbot
 
+
 3. Create access token https://github.com/settings/tokens/new with required user permissions (`read:user`, `user:email`, `user:follow`)
+
 
 4. Run the bot with the access token and the number of followers.
 
 .. code-block::
 
     $ python -m ghbot.cli $access-token-here 1000 -v
+
 
 5. Then wait or run as a background process.
