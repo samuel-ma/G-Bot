@@ -39,4 +39,4 @@ To Use the bot, follow the following steps
 
     $ python -m ghbot.cli $access-token-here 1000 -v
 
-5. Then wait or run as a background process
+5. Then wait or run as a background process.
