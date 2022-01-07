@@ -39,7 +39,13 @@ To Use the bot, follow the following steps
 
 .. code-block::
 
-    $ python -m ghbot.cli $access-token-here 1000 -v
+    $ python -m ghbot.cli follow $access-token-here --c 3000 -v
 
 
 5. Then wait or run as a background process.
+
+6. To unfollow users that didn't follow you.
+
+.. code-block::
+
+    $ python -m ghbot.cli clean $access-token-here -v

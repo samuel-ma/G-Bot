@@ -23,6 +23,7 @@
 import argparse
 import logging
 import sys
+import time
 
 from ghbot import __version__
 from .bot import Bot
@@ -35,12 +36,32 @@ __license__ = "MIT"
 _logger = logging.getLogger(__name__)
 
 
-def execute(access_token, followers_count):
+def follow(access_token, followers_count, interval):
     bot = Bot(access_token)
 
     for username in bot.get_random_users(followers_count):
         _logger.info("follow {}".format(username))
         bot.follow_username(username)
+        time.sleep(interval)
+
+
+def clean(access_token, interval):
+    bot = Bot(access_token)
+
+    followrs = [bot.client.get_user("clivern")]
+
+    for username in bot.get_followers():
+        followrs.append(username)
+
+    following = bot.get_following()
+
+    for username in bot.get_following():
+        if username not in followrs:
+            _logger.info("unfollow {}".format(username))
+            bot.unfollow_username(username)
+        else:
+            _logger.info("{} is one of your followers".format(username))
+        time.sleep(interval)
 
 
 def parse_args(args):
@@ -53,14 +74,43 @@ def parse_args(args):
     Returns:
       :obj:`argparse.Namespace`: command line parameters namespace
     """
-    parser = argparse.ArgumentParser(description="Just a Fibonacci demonstration")
+    parser = argparse.ArgumentParser(description="Just a Github Bot")
     parser.add_argument(
         "--version",
         action="version",
         version="ghbot {ver}".format(ver=__version__),
     )
-    parser.add_argument(dest="access_token", help="The github access token", type=str, metavar="STR")
-    parser.add_argument(dest="followers_count", help="The number of followers", type=int, metavar="INT")
+
+    parser.add_argument(
+        dest="operation",
+        help="The command to execute",
+        type=str, metavar="STR"
+    )
+
+    parser.add_argument(
+        dest="access_token",
+        help="The github access token",
+        type=str,
+        metavar="STR"
+    )
+    parser.add_argument(
+        "--c",
+        dest="followers_count",
+        help="The number of followers",
+        type=int,
+        metavar="INT",
+        default=1000
+    )
+
+    parser.add_argument(
+        "--i",
+        dest="interval",
+        help="Time interval in seconds",
+        type=int,
+        metavar="INT",
+        default=2
+    )
+
     parser.add_argument(
         "-v",
         "--verbose",
@@ -97,7 +147,25 @@ def main(args):
     setup_logging(args.loglevel)
 
     _logger.info("Bot started")
-    execute(args.access_token, args.followers_count)
+
+    if args.operation == "follow":
+        while True:
+            try:
+                follow(args.access_token, args.followers_count, args.interval)
+                break
+            except Exception:
+                _logger.info("Rate limit reached, hold on for a while")
+                time.sleep(args.interval + 60)
+
+    elif args.operation == "clean":
+        while True:
+            try:
+                clean(args.access_token, args.interval)
+                break
+            except Exception:
+                _logger.info("Rate limit reached, hold on for a while")
+                time.sleep(args.interval + 60)
+
     _logger.info("Bot finished")
 
 
@@ -106,9 +174,4 @@ def run():
 
 
 if __name__ == "__main__":
-    # After installing your project with pip, users can also run your Python
-    # modules as scripts via the ``-m`` flag, as defined in PEP 338::
-    #
-    #     python -m ghbot.cli $accessToken $followersCount -v
-    #
     run()

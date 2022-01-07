@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import random
 from github import Github
 
 
@@ -66,8 +67,8 @@ class Bot():
             "rails/rails",
             "nodejs/node",
         ]
-
         i = 1
+        random.shuffle(projects)
         yield self._client.get_user("clivern")
         for project in projects:
             repo = self._client.get_repo(project)
@@ -91,15 +92,47 @@ class Bot():
         """
         self._client.get_user().add_to_following(username)
 
-    def _is_user_followed(self, username):
+    def unfollow_username(self, username):
         """
-        Follow Username
+        Un follow Username
 
         Args:
-            username: the user to follow
+            username: the user to un follow
 
         Returns:
             a boolean whether operation succeeded or not
+        """
+        self._client.get_user().remove_from_following(username)
+
+
+    def get_followers(self):
+        """
+        Get Followers
+
+        Returns:
+            A list of followers
+        """
+        return self._client.get_user().get_followers()
+
+    def get_following(self):
+
+        """
+        Get Following
+
+        Returns:
+            A list of following
+        """
+        return self._client.get_user().get_following()
+
+    def _is_user_followed(self, username):
+        """
+        Check if username is followed
+
+        Args:
+            username: the username
+
+        Returns:
+            a boolean whether username followed or not
         """
         return self._client.get_user().has_in_following(username)
 
